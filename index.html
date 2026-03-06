@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GC Scout â Scouting Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* ââ NAV ââ */
+.nav{background:#111827;border-bottom:1px solid #1e293b;padding:0 24px;display:flex;align-items:center;gap:16px;height:56px;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#fff}
+.nav-logo svg{width:28px;height:28px}
+.nav-back{display:none;align-items:center;gap:6px;color:#94a3b8;font-size:14px;cursor:pointer;padding:6px 10px;border-radius:6px;transition:all .15s}
+.nav-back:hover{background:#1e293b;color:#fff}
+.nav-back.show{display:flex}
+.nav-spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-primary{background:#16a34a;color:#fff}
+.btn-primary:hover{background:#15803d}
+.btn-outline{background:transparent;color:#94a3b8;border:1px solid #334155}
+.btn-outline:hover{border-color:#64748b;color:#e2e8f0}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-sm{padding:5px 10px;font-size:13px}
+
+/* ââ MAIN ââ */
+.main{max-width:1200px;margin:0 auto;padding:32px 24px}
+
+/* ââ HOME ââ */
+.home-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.home-title{font-size:26px;font-weight:800;color:#fff}
+.home-subtitle{color:#64748b;font-size:14px;margin-top:4px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.team-card{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:20px;cursor:pointer;transition:all .2s}
+.team-card:hover{border-color:#16a34a;transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.15)}
+.team-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.team-name{font-size:18px;font-weight:700;color:#fff}
+.team-record{font-size:13px;color:#64748b;margin-top:2px}
+.confidence-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.conf-high{background:#14532d;color:#4ade80}
+.conf-med{background:#713f12;color:#fbbf24}
+.conf-low{background:#450a0a;color:#f87171}
+.team-stats-row{display:flex;gap:20px;margin-bottom:14px}
+.stat-item{flex:1}
+.stat-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em}
+.stat-value{font-size:20px;font-weight:700;color:#fff}
+.stat-sub{font-size:11px;color:#64748b}
+.team-card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #1e293b;padding-top:12px;margin-top:4px}
+.games-badge{font-size:12px;color:#64748b}
+.date-badge{font-size:12px;color:#64748b}
+
+/* ââ EMPTY STATE ââ */
+.empty-state{text-align:center;padding:80px 20px}
+.empty-icon{width:64px;height:64px;margin:0 auto 16px;opacity:.3}
+.empty-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
+.empty-sub{color:#64748b;font-size:14px;max-width:360px;margin:0 auto 28px}
+
+/* ââ TEAM DETAIL ââ */
+.team-hero{background:linear-gradient(135deg,#111827 0%,#0d1b2a 100%);border:1px solid #1e293b;border-radius:12px;padding:28px;margin-bottom:24px}
+.team-hero-name{font-size:32px;font-weight:800;color:#fff;margin-bottom:4px}
+.team-hero-meta{color:#64748b;font-size:14px;margin-bottom:20px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:24px}
+.hero-stat{text-align:center}
+.hero-stat-val{font-size:28px;font-weight:800;color:#4ade80}
+.hero-stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em}
+
+/* ââ TABS ââ */
+.tabs{display:flex;gap:4px;background:#111827;border:1px solid #1e293b;border-radius:10px;padding:4px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;transition:all .15s;white-space:nowrap}
+.tab.active{background:#1e293b;color:#fff}
+.tab:hover:not(.active){color:#94a3b8}
+
+/* ââ SECTION CARDS ââ */
+.card{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title svg{opacity:.6}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin:20px 0 10px}
+
+/* ââ TABLES ââ */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:#0f172a;color:#64748b;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:left;border-bottom:1px solid #1e293b}
+.data-table td{padding:10px 12px;border-bottom:1px solid #1e293b;color:#cbd5e1}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:#1a2540}
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #1e293b}
+.spot-num{width:28px;height:28px;border-radius:50%;background:#1e293b;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#94a3b8}
+.danger-tag{display:inline-flex;align-items:center;gap:3px;background:#450a0a;color:#f87171;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
+.weak-tag{display:inline-flex;align-items:center;gap:3px;background:#14532d;color:#4ade80;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
+.name-cell{font-weight:600;color:#e2e8f0}
+.number-chip{display:inline-flex;align-items:center;justify-content:center;background:#1e293b;border-radius:4px;font-size:11px;font-weight:700;color:#94a3b8;padding:1px 5px;margin-left:4px}
+
+/* ââ PITCHER CARDS ââ */
+.pitcher-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.pitcher-card{background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:18px}
+.pitcher-card.primary{border-color:#1d4ed8}
+.pitcher-role{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#3b82f6;margin-bottom:6px}
+.pitcher-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:12px}
+.pitcher-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pitcher-stat{text-align:center;background:#111827;border-radius:6px;padding:8px}
+.pitcher-stat-val{font-size:16px;font-weight:700;color:#e2e8f0}
+.pitcher-stat-lbl{font-size:10px;color:#64748b;text-transform:uppercase}
+.pitcher-notes{font-size:12px;color:#94a3b8;line-height:1.6;border-top:1px solid #1e293b;padding-top:10px;margin-top:4px}
+
+/* ââ FIELD DIAGRAM ââ */
+.field-wrap{display:flex;flex-direction:column;align-items:center;gap:24px}
+@media(min-width:768px){.field-wrap{flex-direction:row;align-items:flex-start}}
+.field-svg-wrap{flex-shrink:0}
+.field-notes{flex:1;min-width:0}
+.field-pos-list{display:flex;flex-direction:column;gap:8px}
+.pos-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0f172a;border-radius:8px;border:1px solid #1e293b}
+.pos-label{font-size:11px;font-weight:700;color:#64748b;width:30px;flex-shrink:0;text-transform:uppercase}
+.pos-player{font-size:13px;font-weight:600;color:#e2e8f0}
+.pos-note{font-size:11px;color:#64748b;margin-left:auto}
+.pos-weak{border-color:#dc262640;background:#450a0a20}
+.pos-weak .pos-label{color:#f87171}
+
+/* ââ RECOMMENDATIONS ââ */
+.rec-section{margin-bottom:20px}
+.rec-section-title{font-size:13px;font-weight:700;color:#94a3b8;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rec-list{display:flex;flex-direction:column;gap:8px}
+.rec-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#0f172a;border-radius:8px;border-left:3px solid #334155;font-size:13px;color:#cbd5e1;line-height:1.6}
+.rec-item.attack{border-color:#16a34a}
+.rec-item.batting{border-color:#3b82f6}
+.rec-item.baserun{border-color:#f59e0b}
+.rec-item.defense{border-color:#8b5cf6}
+.rec-num{font-weight:700;font-size:12px;color:#64748b;flex-shrink:0;padding-top:1px}
+
+/* ââ OVERVIEW ââ */
+.overview-text{font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.stats-box{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:14px;text-align:center}
+.stats-box-val{font-size:22px;font-weight:700;color:#fff}
+.stats-box-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.batting-notes-list{display:flex;flex-direction:column;gap:8px}
+.batting-note{font-size:13px;color:#94a3b8;padding:10px 12px;background:#0f172a;border-radius:8px;line-height:1.6;border-left:3px solid #334155}
+
+/* ââ TOAST ââ */
+.toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:999}
+.toast{background:#1e293b;color:#e2e8f0;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 24px rgba(0,0,0,.4);animation:slideIn .2s ease;display:flex;align-items:center;gap:8px;border:1px solid #334155}
+.toast.success{border-color:#16a34a;color:#4ade80}
+.toast.error{border-color:#dc2626;color:#f87171}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ââ MODAL ââ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#111827;border:1px solid #1e293b;border-radius:14px;padding:28px;max-width:480px;width:calc(100% - 48px)}
+.modal-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:8px}
+.modal-sub{font-size:13px;color:#64748b;margin-bottom:20px;line-height:1.6}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.drop-zone{border:2px dashed #334155;border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:all .2s}
+.drop-zone:hover,.drop-zone.drag{border-color:#16a34a;background:#14532d15}
+.drop-zone-text{font-size:14px;color:#64748b}
+.drop-zone-sub{font-size:12px;color:#475569;margin-top:4px}
+
+/* ââ DATA QUALITY ââ */
+.quality-bar{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.quality-item{font-size:12px;color:#64748b}
+.quality-item span{color:#e2e8f0;font-weight:600}
+
+/* ââ DELETE btn ââ */
+.team-actions{display:flex;gap:8px;margin-top:16px}
+
+/* ââ RESPONSIVE ââ */
+@media(max-width:640px){
+  .main{padding:20px 16px}
+  .hero-stats{gap:16px}
+  .tabs{gap:2px}
+  .tab{padding:7px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <svg viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13" fill="#16a34a" stroke="#4ade80" stroke-width="1.5"/>
+      <path d="M14 4 Q18 9 18 14 Q18 19 14 24" stroke="#fff" stroke-width="1.5" fill="none"/>
+      <path d="M14 4 Q10 9 10 14 Q10 19 14 24" stroke="#fff" stroke-width="1.5" fill="none"/>
+      <path d="M4 14 Q9 10 14 10 Q19 10 24 14" stroke="#fff" stroke-width="1.5" fill="none"/>
+      <path d="M4 14 Q9 18 14 18 Q19 18 24 14" stroke="#fff" stroke-width="1.5" fill="none"/>
+    </svg>
+    GC Scout
+  </div>
+  <button class="nav-back" id="navBack" onclick="goHome()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 13L5 8L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    All Teams
+  </button>
+  <div class="nav-spacer"></div>
+  <button class="btn btn-outline btn-sm" onclick="openImportModal()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 10v2h10v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Import Report
+  </button>
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="mainContent"></main>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-title">Import Scouting Report</div>
+    <div class="modal-sub">Drop a JSON scouting report exported by the GC Scout skill. It will be saved to your dashboard and any existing report for that team will be updated.</div>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <svg class="empty-icon" viewBox="0 0 48 48" fill="none" style="width:40px;height:40px;margin:0 auto 10px;opacity:.5">
+        <path d="M24 6v24M14 18l10-12 10 12" stroke="#4ade80" stroke-width="3" stroke-linecap="round"/>
+        <rect x="8" y="34" width="32" height="8" rx="4" stroke="#4ade80" stroke-width="2"/>
+      </svg>
+      <div class="drop-zone-text">Click to choose file or drag &amp; drop</div>
+      <div class="drop-zone-sub">Accepts .json files from GC Scout skill</div>
+    </div>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileSelect(event)">
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeImportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  STATE & STORAGE
+// âââââââââââââââââââââââââââââââââââââââââââââ
+let teams = {};
+let currentTeam = null;
+let currentTab = 'overview';
+
+function loadState() {
+  try { teams = JSON.parse(localStorage.getItem('gcscout_teams') || '{}'); } catch { teams = {}; }
+}
+function saveState() {
+  localStorage.setItem('gcscout_teams', JSON.stringify(teams));
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  ROUTING
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function goHome() {
+  currentTeam = null;
+  currentTab = 'overview';
+  document.getElementById('navBack').classList.remove('show');
+  render();
+}
+function openTeam(key) {
+  currentTeam = key;
+  currentTab = 'overview';
+  document.getElementById('navBack').classList.add('show');
+  render();
+}
+function setTab(tab) {
+  currentTab = tab;
+  render();
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  RENDER ROUTER
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function render() {
+  const el = document.getElementById('mainContent');
+  if (!currentTeam) {
+    el.innerHTML = renderHome();
+  } else {
+    el.innerHTML = renderTeam(teams[currentTeam]);
+  }
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  HOME
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function renderHome() {
+  const keys = Object.keys(teams);
+  if (!keys.length) return renderEmpty();
+  const cards = keys.map(k => renderTeamCard(k, teams[k])).join('');
+  return `
+    <div class="home-header">
+      <div>
+        <div class="home-title">Scouting Dashboard</div>
+        <div class="home-subtitle">${keys.length} team${keys.length!==1?'s':''} scouted</div>
+      </div>
+    </div>
+    <div class="team-grid">${cards}</div>`;
+}
+
+function renderEmpty() {
+  return `
+    <div class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="28" stroke="#4ade80" stroke-width="2"/>
+        <path d="M32 12 Q38 20 38 32 Q38 44 32 52" stroke="#4ade80" stroke-width="2" fill="none"/>
+        <path d="M32 12 Q26 20 26 32 Q26 44 32 52" stroke="#4ade80" stroke-width="2" fill="none"/>
+        <path d="M12 32 Q20 26 32 26 Q44 26 52 32" stroke="#4ade80" stroke-width="2" fill="none"/>
+        <path d="M12 32 Q20 38 32 38 Q44 38 52 32" stroke="#4ade80" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="empty-title">No scouting reports yet</div>
+      <div class="empty-sub">Use the GC Scout skill to scout a team, then import the JSON report here.</div>
+      <button class="btn btn-primary" onclick="openImportModal()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 10v2h10v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Import Your First Report
+      </button>
+    </div>`;
+}
+
+function renderTeamCard(key, t) {
+  const m = t.meta || {};
+  const ts = (t.overview || {}).teamStats || {};
+  const conf = (t.dataQuality || {}).confidence || 'Unknown';
+  const confClass = conf==='High'?'conf-high':conf==='Medium'?'conf-med':'conf-low';
+  return `
+    <div class="team-card" onclick="openTeam('${esc(key)}')">
+      <div class="team-card-header">
+        <div>
+          <div class="team-name">${esc(m.teamName||key)}</div>
+          <div class="team-record">${esc(m.seasonRecord||'')} Record Â· ${esc(m.gamesReviewed||0)} games</div>
+        </div>
+        <span class="confidence-badge ${confClass}">${esc(conf)}</span>
+      </div>
+      <div class="team-stats-row">
+        <div class="stat-item">
+          <div class="stat-label">Avg R/G</div>
+          <div class="stat-value">${esc(ts.avgRunsPerGame||ts.runsPerGame||'â')}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Team AVG</div>
+          <div class="stat-value">${esc(ts.teamBattingAvg||'â')}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Avg RA/G</div>
+          <div class="stat-value">${esc(ts.avgRunsAllowedPerGame||ts.runsAllowedPerGame||'â')}</div>
+        </div>
+      </div>
+      <div class="team-card-footer">
+        <span class="games-badge">Scouted ${esc(m.generatedDate||'')}</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12l4-4-4-4" stroke="#64748b" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>`;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  TEAM DETAIL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function renderTeam(t) {
+  if (!t) return '<p>Report not found.</p>';
+  const m = t.meta || {};
+  const ts = (t.overview || {}).teamStats || {};
+  const conf = (t.dataQuality||{}).confidence||'Unknown';
+  const confClass = conf==='High'?'conf-high':conf==='Medium'?'conf-med':'conf-low';
+  const tabs = ['overview','lineup','batting','pitching','defense','recommendations'];
+  const tabLabels = {overview:'Overview',lineup:'Lineup',batting:'Batting',pitching:'Pitching',defense:'Defense',recommendations:'Recs'};
+  const tabsHtml = tabs.map(tb=>`<div class="tab${currentTab===tb?' active':''}" onclick="setTab('${tb}')">${tabLabels[tb]}</div>`).join('');
+
+  let body = '';
+  if (currentTab === 'overview')        body = renderOverview(t);
+  else if (currentTab === 'lineup')     body = renderLineup(t);
+  else if (currentTab === 'batting')    body = renderBatting(t);
+  else if (currentTab === 'pitching')   body = renderPitching(t);
+  else if (currentTab === 'defense')    body = renderDefense(t);
+  else if (currentTab === 'recommendations') body = renderRecs(t);
+
+  return `
+    <div class="team-hero">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="team-hero-name">${esc(m.teamName||'Unknown Team')}</div>
+          <div class="team-hero-meta">Season Record: ${esc(m.seasonRecord||'â')} Â· ${esc(m.gamesReviewed||0)} games reviewed Â· Scouted ${esc(m.generatedDate||'')}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="confidence-badge ${confClass}" style="font-size:12px;padding:4px 10px">Confidence: ${esc(conf)}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteTeam('${esc(m.teamName||'')}')">Delete</button>
+        </div>
+      </div>
+      <div class="hero-stats" style="margin-top:20px">
+        ${heroStat(ts.runsScored,'Runs Scored')}
+        ${heroStat(ts.runsAllowed,'Runs Allowed')}
+        ${heroStat(ts.avgRunsPerGame||ts.runsPerGame,'R/Game')}
+        ${heroStat(ts.teamBattingAvg,'Team AVG')}
+        ${heroStat(ts.teamOBP,'Team OBP')}
+        ${heroStat(ts.teamKRate,'K Rate')}
+        ${heroStat(ts.teamBBRate,'BB Rate')}
+      </div>
+    </div>
+    <div class="tabs">${tabsHtml}</div>
+    ${body}`;
+}
+
+function heroStat(val, lbl) {
+  if (!val && val !== 0) return '';
+  return `<div class="hero-stat"><div class="hero-stat-val">${esc(String(val))}</div><div class="hero-stat-lbl">${lbl}</div></div>`;
+}
+
+// ââ OVERVIEW ââ
+function renderOverview(t) {
+  const ov = t.overview || {};
+  const dq = t.dataQuality || {};
+  return `
+    <div class="card">
+      <div class="card-title">Team Summary</div>
+      <div class="overview-text">${esc(ov.summary||'No summary available.')}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Data Quality</div>
+      <div class="quality-bar">
+        <div class="quality-item">Box Score Games: <span>${esc(dq.boxScoreGames||'â')} / ${esc(dq.totalGames||'â')}</span></div>
+        <div class="quality-item">Play-by-Play: <span>${esc(dq.ppGames||'â')} games</span></div>
+        <div class="quality-item">Confidence: <span>${esc(dq.confidence||'â')}</span></div>
+        ${dq.gaps?`<div class="quality-item" style="flex-basis:100%;color:#94a3b8">Notes: ${esc(dq.gaps)}</div>`:''}
+      </div>
+    </div>`;
+}
+
+// ââ LINEUP ââ
+function renderLineup(t) {
+  const lineup = t.lineup || [];
+  const notes = t.lineupNotes || [];
+  if (!lineup.length) return `<div class="card"><div class="card-title">Lineup</div><p style="color:#64748b;font-size:13px">No lineup data available.</p></div>`;
+  const rows = lineup.map(p => {
+    const isDanger = p.isDanger || p.danger;
+    const isWeak = p.isWeak || p.weak;
+    return `<tr>
+      <td><span class="spot-num">${esc(p.spot||'')}</span></td>
+      <td><span class="name-cell">${esc(p.name||'')}</span><span class="number-chip">#${esc(p.number||'')}</span>
+        ${isDanger?'<span class="danger-tag" style="margin-left:6px">ð¥ Danger</span>':''}
+        ${isWeak?'<span class="weak-tag" style="margin-left:6px">ð¯ Target</span>':''}
+      </td>
+      <td>${esc(p.position||'')}</td>
+      <td>${esc(p.avg||'â')}</td>
+      <td>${esc(p.ab||'â')}</td>
+      <td>${esc(p.h||'â')}</td>
+      <td>${esc(p.hr||'â')}</td>
+      <td>${esc(p.rbi||'â')}</td>
+      <td>${esc(p.bb||'â')}</td>
+      <td>${esc(p.so||'â')}</td>
+      <td>${esc(p.sb||'â')}</td>
+      <td style="color:#94a3b8;font-size:12px;max-width:200px">${esc(p.notes||'')}</td>
+    </tr>`;
+  }).join('');
+
+  const notesHtml = notes.length ? `
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">Lineup Notes</div>
+      <div class="batting-notes-list">${notes.map(n=>`<div class="batting-note">${esc(n)}</div>`).join('')}</div>
+    </div>` : '';
+
+  return `
+    <div class="card">
+      <div class="card-title">Most Common Batting Order</div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>#</th><th>Player</th><th>Pos</th><th>AVG</th><th>AB</th><th>H</th><th>HR</th><th>RBI</th><th>BB</th><th>SO</th><th>SB</th><th>Scouting Notes</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>${notesHtml}`;
+}
+
+// ââ BATTING ââ
+function renderBatting(t) {
+  const bn = t.batterNotes || {};
+  const danger = bn.dangerHitters || [];
+  const weak = bn.weakSpots || [];
+  const notes = bn.teamBattingNotes || [];
+
+  const dangerHtml = danger.length ? danger.map(h => `
+    <div style="background:#0f172a;border:1px solid #7f1d1d40;border-left:3px solid #dc2626;border-radius:8px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span class="danger-tag" style="font-size:12px;padding:3px 8px">ð¥ DANGER</span>
+        <span style="font-weight:700;color:#fff;font-size:15px">${esc(h.name||'')} <span class="number-chip">#${esc(h.number||'')}</span></span>
+        <span style="color:#64748b;font-size:12px">${esc(h.position||'')}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px">
+        ${['avg','ab','h','hr','rbi','bb','so'].map(k=>`<div style="text-align:center"><div style="font-size:16px;font-weight:700;color:#f87171">${esc(h[k]||'â')}</div><div style="font-size:10px;color:#64748b;text-transform:uppercase">${k}</div></div>`).join('')}
+      </div>
+      ${h.notes?`<div style="font-size:12px;color:#94a3b8;line-height:1.6;border-top:1px solid #1e293b;padding-top:8px">${esc(h.notes)}</div>`:''}
+    </div>`) .join('') : '<p style="color:#64748b;font-size:13px">No danger hitters flagged.</p>';
+
+  const weakHtml = weak.length ? `<div class="batting-notes-list">${weak.map(w=>`<div class="batting-note" style="border-color:#16a34a">ð¯ ${esc(typeof w==='string'?w:w.note||JSON.stringify(w))}</div>`).join('')}</div>` : '<p style="color:#64748b;font-size:13px">No weak spots identified.</p>';
+
+  const teamNotesHtml = notes.length ? `<div class="batting-notes-list">${notes.map(n=>`<div class="batting-note">${esc(n)}</div>`).join('')}</div>` : '';
+
+  return `
+    <div class="card">
+      <div class="card-title">â ï¸ Danger Hitters</div>
+      ${dangerHtml}
+    </div>
+    <div class="card">
+      <div class="card-title">ð¯ Weak Spots to Attack</div>
+      ${weakHtml}
+    </div>
+    ${teamNotesHtml?`<div class="card"><div class="card-title">Team Batting Tendencies</div>${teamNotesHtml}</div>`:''}`;
+}
+
+// ââ PITCHING ââ
+function renderPitching(t) {
+  const pitchers = t.pitchers || [];
+  const pitchingNotes = t.pitchingNotes || [];
+  if (!pitchers.length) return `<div class="card"><div class="card-title">Pitching Staff</div><p style="color:#64748b;font-size:13px">No pitching data available.</p></div>`;
+
+  const cards = pitchers.map(p => `
+    <div class="pitcher-card${p.isPrimary||p.primary?' primary':''}">
+      <div class="pitcher-role">${esc(p.role||'Pitcher')}</div>
+      <div class="pitcher-name">${esc(p.name||'')} ${p.number?`<span class="number-chip">#${esc(p.number)}</span>`:''}</div>
+      <div class="pitcher-stats">
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.era||'â')}</div><div class="pitcher-stat-lbl">ERA</div></div>
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.ip||'â')}</div><div class="pitcher-stat-lbl">IP</div></div>
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.so||'â')}</div><div class="pitcher-stat-lbl">SO</div></div>
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.bb||'â')}</div><div class="pitcher-stat-lbl">BB</div></div>
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.kbb||'â')}</div><div class="pitcher-stat-lbl">K/BB</div></div>
+        <div class="pitcher-stat"><div class="pitcher-stat-val">${esc(p.record||'â')}</div><div class="pitcher-stat-lbl">Record</div></div>
+      </div>
+      ${p.notes?`<div class="pitcher-notes">${esc(p.notes)}</div>`:''}
+    </div>`).join('');
+
+  const notesHtml = pitchingNotes.length ? `
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">Pitching Staff Notes</div>
+      <div class="batting-notes-list">${pitchingNotes.map(n=>`<div class="batting-note">${esc(n)}</div>`).join('')}</div>
+    </div>` : '';
+
+  return `<div class="card"><div class="card-title">Pitching Staff</div><div class="pitcher-grid">${cards}</div></div>${notesHtml}`;
+}
+
+// ââ DEFENSE ââ
+function renderDefense(t) {
+  const def = t.defense || {};
+  const pos = def.positions || {};
+  const weakPos = (def.weakPositions || []).map(p=>p.toLowerCase());
+
+  const posOrder = [
+    {key:'P',label:'P',x:250,y:230},
+    {key:'C',label:'C',x:250,y:330},
+    {key:'1B',label:'1B',x:340,y:210},
+    {key:'2B',label:'2B',x:310,y:160},
+    {key:'3B',label:'3B',x:160,y:210},
+    {key:'SS',label:'SS',x:190,y:160},
+    {key:'LF',label:'LF',x:100,y:100},
+    {key:'CF',label:'CF',x:250,y:60},
+    {key:'RF',label:'RF',x:400,y:100},
+  ];
+
+  const fieldSvg = `
+    <svg viewBox="0 0 500 400" width="340" height="272" style="display:block">
+      <!-- sky bg -->
+      <rect width="500" height="400" fill="#0a0f1a"/>
+      <!-- outfield grass arc -->
+      <path d="M 60 380 Q 250 20 440 380 Z" fill="#14532d"/>
+      <!-- infield dirt -->
+      <path d="M 250 340 L 340 210 L 250 80 L 160 210 Z" fill="#92400e" opacity=".7"/>
+      <!-- grass overlay infield -->
+      <path d="M 250 340 L 340 210 L 250 80 L 160 210 Z" fill="#16a34a" opacity=".18"/>
+      <!-- foul lines -->
+      <line x1="250" y1="340" x2="60" y2="380" stroke="#fff" stroke-width="1.5" opacity=".4"/>
+      <line x1="250" y1="340" x2="440" y2="380" stroke="#fff" stroke-width="1.5" opacity=".4"/>
+      <!-- bases -->
+      <rect x="242" y="72" width="16" height="16" fill="white" transform="rotate(45 250 80)"/>
+      <rect x="332" y="202" width="16" height="16" fill="white" transform="rotate(45 340 210)"/>
+      <rect x="152" y="202" width="16" height="16" fill="white" transform="rotate(45 160 210)"/>
+      <!-- home plate -->
+      <polygon points="250,340 242,332 242,322 258,322 258,332" fill="white"/>
+      <!-- pitcher mound -->
+      <circle cx="250" cy="210" r="10" fill="#b45309" opacity=".8"/>
+      ${posOrder.map(p=>{
+        const player = pos[p.key]||'';
+        const shortName = player.split(' ').pop().split('/')[0];
+        const isWeak = weakPos.includes(p.key.toLowerCase());
+        return `
+          <circle cx="${p.x}" cy="${p.y}" r="14" fill="${isWeak?'#dc2626':'#1e3a5f'}" stroke="${isWeak?'#f87171':'#3b82f6'}" stroke-width="1.5"/>
+          <text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="9" font-weight="700" fill="white" font-family="Inter,sans-serif">${p.label}</text>
+          ${player?`<text x="${p.x}" y="${p.y+26}" text-anchor="middle" font-size="8.5" fill="#94a3b8" font-family="Inter,sans-serif">${shortName.substring(0,8)}</text>`:''}
+        `;
+      }).join('')}
+    </svg>`;
+
+  const posListItems = posOrder.map(p => {
+    const player = pos[p.key]||'';
+    const isWeak = weakPos.includes(p.key.toLowerCase());
+    return `<div class="pos-row${isWeak?' pos-weak':''}">
+      <span class="pos-label">${p.label}</span>
+      <span class="pos-player">${esc(player||'Unknown')}</span>
+    </div>`;
+  }).join('');
+
+  const weakHtml = def.weakSpots && def.weakSpots.length ? `
+    <div class="card">
+      <div class="card-title">Defensive Weak Spots</div>
+      <div class="batting-notes-list">${def.weakSpots.map(w=>`<div class="batting-note" style="border-color:#dc2626">â ï¸ ${esc(w)}</div>`).join('')}</div>
+    </div>` : '';
+
+  const baseHtml = t.baserunning ? `
+    <div class="card">
+      <div class="card-title">Baserunning</div>
+      <div class="stats-grid" style="margin-bottom:14px">
+        <div class="stats-box"><div class="stats-box-val">${esc(t.baserunning.sbAttempts||'â')}</div><div class="stats-box-lbl">SB Attempts</div></div>
+        <div class="stats-box"><div class="stats-box-val">${esc(t.baserunning.sbSuccess||'â')}</div><div class="stats-box-lbl">Successful</div></div>
+        <div class="stats-box"><div class="stats-box-val" style="color:${t.baserunning.tendency==='Aggressive'?'#f87171':t.baserunning.tendency==='Conservative'?'#4ade80':'#fbbf24'}">${esc(t.baserunning.tendency||'â')}</div><div class="stats-box-lbl">Tendency</div></div>
+      </div>
+      ${t.baserunning.notes?`<div class="batting-note" style="margin-bottom:10px">${esc(t.baserunning.notes)}</div>`:''}
+      ${(t.baserunning.keyRunners||[]).map(r=>`<div class="batting-note" style="border-color:#f59e0b">ð <strong>${esc(r.name)}</strong> â ${esc(r.notes||'')} ${r.sb?`(${r.sb} SB)`:''}</div>`).join('')}
+    </div>` : '';
+
+  const defNotes = def.notes ? `<div class="batting-note">${esc(def.notes)}</div>` : '';
+  const defStrengths = def.strengths ? `<div class="batting-note" style="border-color:#16a34a">â Strengths: ${esc(def.strengths)}</div>` : '';
+
+  return `
+    <div class="card">
+      <div class="card-title">Defensive Field Position</div>
+      <div class="field-wrap">
+        <div class="field-svg-wrap">${fieldSvg}</div>
+        <div class="field-notes">
+          <div class="section-label" style="margin-top:0">Starting Lineup</div>
+          <div class="field-pos-list">${posListItems}</div>
+        </div>
+      </div>
+      ${def.doublePlays!==undefined?`<div style="margin-top:16px;color:#64748b;font-size:13px">Double plays turned: <strong style="color:#e2e8f0">${esc(def.doublePlays)}</strong></div>`:''}
+      ${defStrengths}${defNotes}
+    </div>
+    ${weakHtml}${baseHtml}`;
+}
+
+// ââ RECOMMENDATIONS ââ
+function renderRecs(t) {
+  const r = t.recommendations || {};
+  const section = (items, cls, icon, title) => {
+    if (!items || !items.length) return '';
+    const list = items.map((item,i)=>`<div class="rec-item ${cls}"><span class="rec-num">${i+1}</span>${esc(item)}</div>`).join('');
+    return `<div class="rec-section"><div class="rec-section-title">${icon} ${title}</div><div class="rec-list">${list}</div></div>`;
+  };
+  return `
+    <div class="card">
+      <div class="card-title">Strategic Recommendations</div>
+      ${section(r.pitchingAgainst,'attack','â¾','Pitching Against Them')}
+      ${section(r.battingAgainst,'batting','ð','Batting Against Their Pitching')}
+      ${section(r.baserunning,'baserun','ð','Baserunning & Situational')}
+      ${section(r.defensivePositioning,'defense','ð§¤','Defensive Positioning')}
+    </div>`;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  IMPORT
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function openImportModal() {
+  document.getElementById('importModal').classList.add('open');
+}
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) readJsonFile(file);
+  e.target.value = '';
+}
+function readJsonFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      importReport(data);
+    } catch {
+      showToast('Invalid JSON file â please check the file format.', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+function importReport(data) {
+  const key = (data.meta && (data.meta.teamName || data.meta.team)) || data.teamName || 'Unknown';
+  const normalKey = key.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  teams[normalKey] = data;
+  saveState();
+  closeImportModal();
+  showToast(`â ${key} scouting report imported!`, 'success');
+  render();
+}
+
+// Called by the GC Scout skill to programmatically load a report
+function loadReport(data) {
+  importReport(data);
+}
+
+function deleteTeam(name) {
+  const key = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  if (confirm(`Delete scouting report for "${name}"?`)) {
+    delete teams[key];
+    saveState();
+    goHome();
+    showToast(`Report for ${name} deleted.`, '');
+  }
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  DRAG & DROP
+// âââââââââââââââââââââââââââââââââââââââââââââ
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) readJsonFile(file);
+});
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  TOAST
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function showToast(msg, type='') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  CLOSE MODAL ON OVERLAY CLICK
+// âââââââââââââââââââââââââââââââââââââââââââââ
+document.getElementById('importModal').addEventListener('click', function(e) {
+  if (e.target === this) closeImportModal();
+});
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  HELPERS
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+//  INIT
+// âââââââââââââââââââââââââââââââââââââââââââââ
+loadState();
+
+// Load sample data on first visit
+if (!Object.keys(teams).length) {
+  const sample = {
+    meta: { teamName: "Sample Tigers", generatedDate: "2026-03-05", gamesReviewed: 8, seasonRecord: "5-3" },
+    overview: {
+      summary: "The Tigers are a contact-heavy lineup with a dangerous top 3 in the order and a steep drop-off in the bottom half. They rely on 2â3 primary pitchers and run aggressively from first base. Their defense is solid at the corners but shows weakness up the middle.",
+      teamStats: { runsScored: 45, runsAllowed: 32, avgRunsPerGame: 5.6, avgRunsAllowedPerGame: 4.0, teamBattingAvg: ".312", teamOBP: ".385", teamKRate: "22%", teamBBRate: "12%" }
+    },
+    lineup: [
+      { spot:1, name:"Marcus Rivera", number:"4", position:"CF", avg:".340", ab:25, h:8, hr:0, rbi:3, bb:5, so:3, sb:4, isDanger:false, notes:"Leadoff, fast, sets the table" },
+      { spot:2, name:"Tyler Johnson", number:"11", position:"SS", avg:".290", ab:24, h:7, hr:1, rbi:5, bb:3, so:4, sb:2, isDanger:true, notes:"High baseball IQ, clutch hitter" },
+      { spot:3, name:"Derek Williams", number:"23", position:"3B", avg:".390", ab:23, h:9, hr:3, rbi:11, bb:4, so:2, sb:0, isDanger:true, notes:"DANGER. Pure power. Middle-middle pitches go far" },
+      { spot:4, name:"Jake Thompson", number:"7", position:"1B", avg:".350", ab:20, h:7, hr:2, rbi:9, bb:3, so:5, sb:0, isDanger:true, notes:"Cleanup. Struggles on breaking balls low and away" },
+      { spot:5, name:"Connor Davis", number:"14", position:"LF", avg:".265", ab:17, h:4, hr:1, rbi:4, bb:2, so:6, sb:1, isDanger:false, notes:"" },
+      { spot:6, name:"Ryan Patel", number:"8", position:"RF", avg:".185", ab:16, h:3, hr:0, rbi:2, bb:1, so:7, sb:0, isWeak:true, notes:"High SO rate. Chase pitches up and away" },
+      { spot:7, name:"Sam Brown", number:"2", position:"2B", avg:".175", ab:16, h:3, hr:0, rbi:1, bb:1, so:8, sb:0, isWeak:true, notes:"Weak contact. Ground ball hitter" },
+      { spot:8, name:"Luke Chen", number:"19", position:"C", avg:".160", ab:13, h:2, hr:0, rbi:1, bb:0, so:6, sb:0, isWeak:true, notes:"Bottom of order. Free out against good velocity" },
+      { spot:9, name:"Noah Garcia", number:"31", position:"P", avg:".120", ab:8, h:1, hr:0, rbi:0, bb:0, so:5, sb:0, isWeak:true, notes:"" }
+    ],
+    lineupNotes: ["Coach consistently bats #23 Williams 3rd regardless of matchup", "Pinch hitting is rare â they commit to the full lineup"],
+    batterNotes: {
+      dangerHitters: [
+        { name:"Derek Williams", number:"23", position:"3B", avg:".390", ab:23, h:9, hr:3, rbi:11, bb:4, so:2, notes:"Pure power hitter. Middle-middle pitches go out. Jam him inside or go low and away. Dangerous with runners on." },
+        { name:"Jake Thompson", number:"7", position:"1B", avg:".350", ab:20, h:7, hr:2, rbi:9, bb:3, so:5, notes:"Cleanup spot. Strong against fastballs. Mix in breaking balls low and away â struggles with spin." }
+      ],
+      weakSpots: [
+        "Spots 6-9 (.185 combined avg, 40% SO rate) â attack aggressively",
+        "#8 Ryan Patel â consistently chases high fastballs. Go up and away.",
+        "#2 Sam Brown â weak contact, ground ball tendency, 50% SO rate"
+      ],
+      teamBattingNotes: [
+        "Lineup gets impatient after falling behind 0-2 â establish early strikes",
+        "Very aggressive on first pitch â their staff throws 65% strikes on pitch 1",
+        "High-leverage situations: #3 and #4 step up, bottom half falls apart"
+      ]
+    },
+    pitchers: [
+      { name:"Carlos Mendez", number:"12", role:"Ace / Starter", record:"3-1", games:5, ip:"18.2", h:12, r:8, er:6, bb:4, so:22, era:"2.89", kbb:"5.5", k9:"10.6", isPrimary:true, notes:"Leads with a fastball, effective early but control slips in 3rd inning. BB rate climbs after pitch 45. Attack early in count â he fills the zone when ahead. Most dominant on the team." },
+      { name:"Ethan Brooks", number:"17", role:"Secondary Starter", record:"2-2", games:4, ip:"14.0", h:16, r:12, er:10, bb:8, so:11, era:"6.43", kbb:"1.4", k9:"7.1", isPrimary:false, notes:"Hittable â high BB rate. Be patient, work counts. Falls behind early and over-throws. Most exploitable when runners are on base." },
+      { name:"Mason Lee", number:"5", role:"Closer / Reliever", record:"0-0", games:5, ip:"8.0", h:5, r:2, er:2, bb:2, so:10, era:"2.25", kbb:"5.0", isPrimary:false, notes:"Hard thrower out of the pen. Short outings only. Strikes out the side but limited to 1-2 innings." }
+    ],
+    pitchingNotes: [
+      "Mendez is the clear ace â the rest of the staff is significantly weaker",
+      "If Mendez reaches 45-50 pitches, his control breaks down â force counts early",
+      "Their bullpen is thin â they'll overuse Mendez in close games"
+    ],
+    baserunning: {
+      sbAttempts: 8, sbSuccess: 6, tendency: "Aggressive",
+      notes: "They run on first movement. Catcher arm is average at best.",
+      keyRunners: [
+        { name: "Marcus Rivera #4", sb: 4, notes: "Fastest on team. Will steal on any catcher. Always assume he's running." },
+        { name: "Tyler Johnson #11", sb: 2, notes: "Smart baserunner. Reads gaps well, scores from 2nd on singles." }
+      ]
+    },
+    defense: {
+      strengths: "Strong corner infielders, good hands at 1B and 3B",
+      weakSpots: ["SS #11 â committed 3 errors on throws across the diamond", "2B #2 â slow to turn double plays, struggles with slow rollers"],
+      doublePlays: 4, notes: "Outfield has average arms. Push singles into gaps aggressively.",
+      weakPositions: ["SS","2B"],
+      positions: { P:"Mendez #12", C:"Chen #19", "1B":"Thompson #7", "2B":"Brown #2", "3B":"Williams #23", SS:"Johnson #11", LF:"Davis #14", CF:"Rivera #4", RF:"Patel #8" }
+    },
+    recommendations: {
+      pitchingAgainst: [
+        "Work the bottom 4 spots (6-9) aggressively â combined .185 avg, 40%+ K rate. Save premium pitches for #3 and #4.",
+        "Jam Derek Williams #23 inside or go low and away â never leave anything middle-middle.",
+        "Their lineup chases high pitches after going 0-2. Establish strikes early, then elevate."
+      ],
+      battingAgainst: [
+        "If facing Mendez, work counts early to hit the pitch-count wall around inning 3. His K rate drops significantly after pitch 45.",
+        "Attack Ethan Brooks #17 with patience â he walks 2+ per inning and gets frustrated. Take pitches.",
+        "First pitch aggression: their entire staff throws 65%+ strikes on pitch 1. Look for something to drive early."
+      ],
+      baserunning: [
+        "Watch Marcus Rivera #4 constantly â he steals on first movement. Pitch-out early when he's on base.",
+        "Push hard to third on singles â outfield arms are average. Score from second on anything in the gap."
+      ],
+      defensivePositioning: [
+        "Shift right side for #23 Williams and #7 Thompson â both are heavy pull hitters.",
+        "Play shallow for spots 6-9 â they make weak contact and bloopers will drop. Cut them off."
+      ]
+    },
+    dataQuality: { boxScoreGames: 8, totalGames: 8, ppGames: 6, gaps: "2 games had limited play-by-play detail.", confidence: "High" }
+  };
+  importReport(sample);
+  return;
+}
+
+render();
+</script>
+</body>
+</html>
