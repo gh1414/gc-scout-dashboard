@@ -1,1 +1,283 @@
-{}
+{
+  "blue_angels_spring_11u": {
+    "meta": {
+      "teamName": "Blue Angels Spring 11U",
+      "season": "2026",
+      "generatedDate": "2026-03-05",
+      "gamesAnalyzed": 3,
+      "record": "0-3"
+    },
+    "summary": "The Blue Angels are a developing 11U team out of Tampa that has struggled through three games but showed meaningful improvement in their most recent outing. Their biggest liability is walk-rate on the mound (24 walks in 12 IP), and their offense draws zero walks, hacking aggressively at everything. Their top threats are David H #24 and Cannon B #23, and they run the bases aggressively with a perfect 7-for-7 stolen base rate.",
+    "batting": {
+      "teamAvg": ".208",
+      "teamOBP": "~.250",
+      "topHitters": [
+        {
+          "name": "#24 David H",
+          "avg": ".333",
+          "rbi": 2,
+          "notes": "Best hitter. Bats 2nd every game, line-drive contact hitter, stole 3rd aggressively in G3. Team MVP."
+        },
+        {
+          "name": "#99 Cruz A",
+          "avg": ".333",
+          "rbi": 1,
+          "notes": "1-game sample only — hit solo HR to left field. Power threat if he appears. Keep ball down and away."
+        },
+        {
+          "name": "#23 Cannon B",
+          "avg": ".333",
+          "rbi": 0,
+          "notes": "Best baserunner, 2 SBs in G1 alone. Makes contact but faded G2/G3. Also primary pitcher in G3 (91 pitches)."
+        }
+      ],
+      "weakSpots": "Harrison S #22 (0-for-5), Jorge P #10 (.167), Jameson G #1 (.000) — combined .083 avg in 12 ABs",
+      "notes": "ZERO walks drawn in 53 ABs across 3 games. Extremely aggressive first-pitch hackers. Get ahead 0-1 and they will chase. No extra-base power aside from Cruz A's HR."
+    },
+    "pitching": {
+      "primary": "Cannon B #23 — G3 starter, 4.2 IP, 13.50 ERA, 7 BB, 5 K, 91 pitches (Feb 22). Wild but has swing-and-miss stuff.",
+      "allPitchers": [
+        {
+          "name": "#1 Jameson G",
+          "role": "Ace (G1 only)",
+          "ip": "2.0",
+          "era": "0.00",
+          "kbb": "4.0",
+          "notes": "Most dangerous pitcher. 4 Ks in 2 IP with 0 ER. Did NOT appear in G3 — availability uncertain. Monitor pregame."
+        },
+        {
+          "name": "#23 Cannon B",
+          "role": "Starter (G3)",
+          "ip": "4.2",
+          "era": "13.50",
+          "kbb": "0.71",
+          "notes": "7 BB in 4.2 IP. Has K ability but loses zone under pressure. Threw 91 pitches Feb 22."
+        },
+        {
+          "name": "#24 David H",
+          "role": "Bullpen (G1)",
+          "ip": "2.0",
+          "era": "22.50",
+          "kbb": "0.0",
+          "notes": "Very hittable as pitcher. 42% strike rate, 4 BB in 2 IP. Best hitter but worst pitcher."
+        },
+        {
+          "name": "#10 Jorge P",
+          "role": "Starter (G2)",
+          "ip": "0.0",
+          "era": "—",
+          "kbb": "0.0",
+          "notes": "Couldn't record an out in G2. Attack immediately if he takes the mound."
+        }
+      ],
+      "mostDominant": "#1 Jameson G (when available)",
+      "mostHittable": "#10 Jorge P and #24 David H (pitching)"
+    },
+    "baserunning": {
+      "stolenBases": "7 for 7 (100%)",
+      "aggressiveRunners": "#23 Cannon B (2 SBs G1), #24 David H (2 SBs), #13 Kareem G, #4 Luke B",
+      "notes": "AGGRESSIVE — run on first opportunity, 0 CS all season. Catcher Jorge P allows passed balls. Run freely on this catcher."
+    },
+    "defense": {
+      "weakSpots": "RF (Mason H #44 / Brooks T #2), catcher Jorge P (passed balls, 0 CS all season), 0 double plays turned",
+      "doublePlays": 0,
+      "notes": "5 errors in first 2 games, 0 in G3 (improving). Frequent positional shuffling. Attack ball to RF/2B area and test catcher arm."
+    },
+    "lineup": {
+      "typicalOrder": [
+        "Kareem G #13",
+        "David H #24",
+        "Jameson G #1 / Cruz A #99",
+        "Jorge P #10",
+        "Dominic M #11",
+        "Cannon B #23",
+        "Luke B #4",
+        "Brooks T #2",
+        "Harrison S #22",
+        "Mason H #44"
+      ],
+      "notes": "10-man batting rotation. Kareem G and David H locked at 1-2. Jameson G missed G3 entirely — monitor availability pregame."
+    },
+    "recommendations": [
+      "THROW STRIKES — zero walks drawn in 53 ABs. Get ahead 0-1 and they chase everything.",
+      "Attack Harrison S #22 (spot 9, 0-for-5) and Jorge P #10 (.167) — automatic outs with first-pitch strikes.",
+      "Pitch David H #24 inside — keep him off the inner half, work him away after getting ahead 0-1.",
+      "If Cruz A #99 appears, keep the ball down and away — he pulled his HR to left field.",
+      "Work the count against every pitcher except Jameson G — staff has 24 walks in 12 IP total.",
+      "Run freely on catcher Jorge P #10 — 0 CS allowed all season, multiple passed balls.",
+      "Score from 2nd on any outfield single — outfield arms are not reliable."
+    ],
+    "games": [
+      {
+        "date": "2026",
+        "opponent": "Game 1 (unknown opponent)",
+        "result": "L",
+        "score": "unknown"
+      },
+      {
+        "date": "2026",
+        "opponent": "St Pete Pelicans (G2)",
+        "result": "L",
+        "score": "unknown"
+      },
+      {
+        "date": "2026-02-22",
+        "opponent": "Canes Tampa 11U (G3)",
+        "result": "L",
+        "score": "0-7"
+      }
+    ]
+  },
+  "canes_tampa_11u": {
+    "meta": {
+      "teamName": "Canes Tampa 11U",
+      "season": "2026",
+      "generatedDate": "2026-03-05",
+      "gamesAnalyzed": 7,
+      "record": "2-5"
+    },
+    "summary": "Canes Tampa 11U is a scrappy, contact-oriented squad with one elite pitcher (Ruben C) who carries the team on the mound. Their offense is led by a patient, high-OBP core at the top of the order but drops off sharply in the bottom half. Their biggest liability is defense — 30 errors across 7 games (4.3/game). When Ruben C pitches they are competitive (2-0 in his starts); without him they have been outscored 54-12.",
+    "batting": {
+      "teamAvg": "~.237",
+      "teamOBP": "~.360",
+      "topHitters": [
+        {
+          "name": "Ruben C",
+          "avg": ".600",
+          "rbi": 1,
+          "notes": "Most dangerous hitter by wide margin. 0 strikeouts in 7 games, 6 walks on top of 6 hits. Reaches base nearly every AB. Also fastest runner — if he gets on, he runs."
+        },
+        {
+          "name": "#12 Asher W",
+          "avg": ".333",
+          "rbi": 1,
+          "notes": "Second-best hitter. 4 walks, good plate discipline. Works pitchers well, scores at high rate."
+        },
+        {
+          "name": "#2 Jack W",
+          "avg": ".250",
+          "rbi": 2,
+          "notes": "Cleanup producer. Draws walks, solid contact, 2 RBI."
+        }
+      ],
+      "weakSpots": "Spots 7-9: William R #1 (.200, 0 BB), Ryan B #17 (.111), Jionni P (.182) — combined ~.175 avg, no walk discipline",
+      "notes": "Relies heavily on walks to manufacture runs — drew 28+ walks across 7 games. No power (zero HRs all season). In G5 scored 4 runs without a hit — all walks and errors."
+    },
+    "pitching": {
+      "primary": "Ruben C — Ace, 2 starts, 9.0 IP, 3.00 ERA, 1 BB, 2 K. Excellent command. Complete-game win in G6 (64 pitches). Without him, staff ERA is 15.00+.",
+      "allPitchers": [
+        {
+          "name": "Ruben C",
+          "role": "Ace",
+          "ip": "9.0",
+          "era": "3.00",
+          "kbb": "2.0",
+          "notes": "Far and away best arm. 64-pitch complete game in G6. Only 1 walk in 9 IP. Induces weak contact. Check pitch count rest — may be unavailable on short rest."
+        },
+        {
+          "name": "#12 Asher W",
+          "role": "Secondary Starter",
+          "ip": "5.1",
+          "era": "8.44",
+          "kbb": "1.3",
+          "notes": "4 Ks in one outing but also 3 WPs in another. Loses command after 40 pitches badly. Work him deep in counts."
+        },
+        {
+          "name": "#13 John Grady M",
+          "role": "Secondary Starter / Long Relief",
+          "ip": "4.1",
+          "era": "6.23",
+          "kbb": "1.0",
+          "notes": "Eats innings after Ruben C. Was hit hard in G4 (7 H, 5 R in 3 IP). Attack early in counts."
+        },
+        {
+          "name": "#17 Ryan B",
+          "role": "Bullpen",
+          "ip": "3.0",
+          "era": "~24.00",
+          "kbb": "low",
+          "notes": "7 BB in 3 IP. Work the count and he walks himself into trouble."
+        }
+      ],
+      "mostDominant": "Ruben C",
+      "mostHittable": "#17 Ryan B, Jionni P, Luke G #27"
+    },
+    "baserunning": {
+      "stolenBases": "~10+ attempts, ~70% success rate",
+      "aggressiveRunners": "Ruben C (5+ SBs, fastest on team), Dominic D #29 (3 SBs), Asher W #12 (2 SBs), Gunnar G #3 (2 SBs)",
+      "notes": "VERY aggressive — entire top half of lineup runs on first movement. Their own catcher allows opponents to steal freely (40+ attempts season-wide). Advance on every wild pitch and passed ball."
+    },
+    "defense": {
+      "weakSpots": "Entire infield — 30 errors in 7 games (4.3/game). Jack W #2 has 6+ errors. Ruben C has 4+ errors. Catcher allows constant wild pitches and passed balls.",
+      "doublePlays": 0,
+      "notes": "Defense is biggest exploitable weakness. Ground balls, bunts toward 3B, and aggressive baserunning punish this unit. Catcher arm is target for steals on virtually every at-bat."
+    },
+    "lineup": {
+      "typicalOrder": [
+        "Gunnar P #99",
+        "Asher W #12",
+        "Ruben C",
+        "Jack W #2",
+        "Dominic D #29",
+        "John Grady M #13",
+        "Gunnar G #3",
+        "Jionni P",
+        "William R #1"
+      ],
+      "notes": "Order shifts game-to-game spots 4-9. Coach keeps Gunnar P #99 at leadoff for walk discipline despite weak hit stats. Bottom third (7-9) is very soft."
+    },
+    "recommendations": [
+      "Attack spots 7-9 mercilessly — William R, Ryan B, Jionni P are ~.175 combined with no walk discipline.",
+      "Do NOT walk Ruben C or Gunnar P #99 — both reach base constantly. Attack with strikes.",
+      "Hold Ruben C close — he has 5+ steals and will attempt to steal 2nd AND 3rd.",
+      "Check Ruben C pitch count rest — if he threw recently (64-pitch games), expect 8+ runs off secondary arms.",
+      "Run on their catcher every pitch — opponents are 40+ for 40+ in steal attempts this season.",
+      "Bunt toward third base — infield has 30 errors in 7 games, will struggle with routine plays.",
+      "Score from 2nd on any single — outfield depth is suspect and infield throws home are unreliable."
+    ],
+    "games": [
+      {
+        "date": "2026",
+        "opponent": "G1",
+        "result": "unknown",
+        "score": "unknown"
+      },
+      {
+        "date": "2026",
+        "opponent": "G2",
+        "result": "unknown",
+        "score": "unknown"
+      },
+      {
+        "date": "2026",
+        "opponent": "Blue Angels Spring 11U (G3)",
+        "result": "W",
+        "score": "7-0"
+      },
+      {
+        "date": "2026",
+        "opponent": "G4",
+        "result": "L",
+        "score": "3-19"
+      },
+      {
+        "date": "2026",
+        "opponent": "R3 Blue Jays (G5)",
+        "result": "W",
+        "score": "4-0"
+      },
+      {
+        "date": "2026",
+        "opponent": "G6 (complete game win)",
+        "result": "W",
+        "score": "unknown"
+      },
+      {
+        "date": "2026",
+        "opponent": "G7 (shutout loss)",
+        "result": "L",
+        "score": "0-unknown"
+      }
+    ]
+  }
+}
