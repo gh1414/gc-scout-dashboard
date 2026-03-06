@@ -241,6 +241,24 @@ function saveState() {
   localStorage.setItem('gcscout_teams', JSON.stringify(teams));
 }
 
+// Fetch remote reports from GitHub and merge into local state
+const REMOTE_URL = 'https://raw.githubusercontent.com/gh1414/gc-scout-dashboard/main/reports.json';
+async function fetchRemoteReports() {
+  try {
+    const res = await fetch(REMOTE_URL + '?t=' + Date.now());
+    if (!res.ok) return;
+    const remote = await res.json();
+    let changed = false;
+    for (const [key, val] of Object.entries(remote)) {
+      if (!teams[key] || (val.meta && val.meta.generatedDate > ((teams[key].meta && teams[key].meta.generatedDate) || ''))) {
+        teams[key] = val;
+        changed = true;
+      }
+    }
+    if (changed) { saveState(); render(); }
+  } catch(e) { /* offline or fetch failed */ }
+}
+
 // âââââââââââââââââââââââââââââââââââââââââââââ
 //  ROUTING
 // âââââââââââââââââââââââââââââââââââââââââââââ
@@ -738,6 +756,7 @@ function esc(str) {
 //  INIT
 // âââââââââââââââââââââââââââââââââââââââââââââ
 loadState();
+fetchRemoteReports(); // merge any new reports pushed by GC Scout skill
 
 // Load sample data on first visit
 if (!Object.keys(teams).length) {
